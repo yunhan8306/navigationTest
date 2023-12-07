@@ -2,4 +2,51 @@
 <resources>
 
     <style name="Theme.NavigationTest" parent="android:Theme.Material.Light.NoActionBar" />
+
+<!--
+ 프로젝트 내 공용 컴포넌트 Theme 적용
+ Theme.YeoboyaGlobal을 상송받는 커스텀 Theme은 styles.xml에 작성.
+ -->
+
+<style name="Theme.NavigationTest2" parent="Theme.NavigationTest">
+    <item name="materialButtonStyle">@style/Theme.NavigationTest.Button</item>
+    <item name="radioButtonStyle">@style/Theme.NavigationTest.RadioButton</item>
+    <item name="editTextStyle">@style/Theme.NavigationTest.EditText</item>
+    <item name="sliderStyle">@style/Theme.NavigationTest.Slider</item>
+    <item name="recyclerViewStyle">@style/Theme.NavigationTest.RecyclerView</item>
+</style>
+
+<!-- Component Theme -->
+<style name="Theme.NavigationTest.Button" parent="Widget.AppCompat.Button.Colored">
+
+</style>
+
+<style name="Theme.NavigationTest.RecyclerView">
+
+</style>
+
+<style name="Theme.NavigationTest.SubButton" parent="Widget.AppCompat.Button.Colored">
+
+</style>
+
+<style name="Theme.NavigationTest.CancelButton" parent="Widget.AppCompat.Button.Colored">
+
+</style>
+
+<style name="Theme.NavigationTest.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+
+</style>
+
+<style name="Theme.NavigationTest.EditText" parent="Widget.AppCompat.EditText">
+
+</style>
+
+<style name="Theme.NavigationTest.Slider" parent="Widget.MaterialComponents.Slider">
+
+</style>
+
+<style name="Theme.NavigationTest.SliderDisable" parent="Widget.MaterialComponents.Slider">
+
+</style>
+
 </resources>
