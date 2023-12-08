@@ -1,6 +1,7 @@
 package com.example.message
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ class MessageListFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        Log.d("YHYH", "MessageListFragment - onCreate called")
     }
 
     override fun onCreateView(
@@ -35,6 +37,17 @@ class MessageListFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_message_list, container, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("YHYH", "MessageListFragment - onResume called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        Log.d("YHYH", "MessageListFragment - onDestroy called")
     }
 
     companion object {

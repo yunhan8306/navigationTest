@@ -20,15 +20,9 @@ class NavigationFragment : BaseFragment<FragmentNavigationBinding>() {
     ) = FragmentNavigationBinding.inflate(inflater, container, false)
 
     override fun initFragment(savedInstanceState: Bundle?) {
-        setDefaultNavigationMenu()
         addListeners()
         collectViewModel()
     }
-
-    private fun setDefaultNavigationMenu() {
-        viewModel.selectNavigation(NavigationType.SWIPE)
-    }
-
     private fun addListeners() = with(binding) {
         clMainList.setFirstClickEvent(200) {
             viewModel.selectNavigation(NavigationType.SWIPE)

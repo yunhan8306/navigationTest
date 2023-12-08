@@ -45,6 +45,11 @@ class LikeFragment : Fragment() {
         Log.d("YHYH", "LikeFragment - onResume called")
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("YHYH", "LikeFragment - onDestroy called")
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of

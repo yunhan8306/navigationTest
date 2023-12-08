@@ -46,6 +46,11 @@ class MyPageFragment : Fragment() {
         Log.d("YHYH", "MyPageFragment - onResume called")
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("YHYH", "MyPageFragment - onDestroy called")
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of

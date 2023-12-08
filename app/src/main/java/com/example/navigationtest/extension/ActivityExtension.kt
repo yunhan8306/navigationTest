@@ -31,3 +31,31 @@ fun FragmentActivity.replaceFragment(
     }
     transaction.commitAllowingStateLoss()
 }
+
+fun FragmentActivity.showFragment(
+    fragment: Fragment?,
+    addBackStack: Boolean = false
+) {
+    requireNotNull(fragment)
+
+    val transaction = supportFragmentManager.beginTransaction()
+    transaction.show(fragment).apply {
+        if (addBackStack) addToBackStack(null)
+    }
+    transaction.commitAllowingStateLoss()
+}
+
+fun FragmentActivity.hideFragment(
+    fragment: Fragment?,
+    addBackStack: Boolean = false
+) {
+    requireNotNull(fragment) {
+        return
+    }
+
+    val transaction = supportFragmentManager.beginTransaction()
+    transaction.hide(fragment).apply {
+        if (addBackStack) addToBackStack(null)
+    }
+    transaction.commitAllowingStateLoss()
+}

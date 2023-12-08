@@ -19,6 +19,9 @@ import com.example.common.model.NavigationType
 import com.example.common.onUiState
 import com.example.navigation.NavigationViewModel
 import com.example.navigationtest.databinding.ActivityMainBinding
+import com.example.navigationtest.extension.hideFragment
+import com.example.navigationtest.extension.replaceFragment
+import com.example.navigationtest.extension.showFragment
 import com.example.swipe.SwipeFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -42,12 +45,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), LifecycleOwnerWrapper 
 
     override fun initActivity(savedInstanceState: Bundle?) {
         collectViewModel()
-    }
-
-    override fun onStart() {
-        super.onStart()
         addNavigationFragment()
-//        selectSwipeFragment()
+        setDefaultNavigation()
     }
 
     private fun collectViewModel() {
@@ -60,55 +59,69 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), LifecycleOwnerWrapper 
 
             scrollTopState.onUiState(
                 success = {
-                    Log.d("YHYH", "위로올리기")
+                    if(it.second) Log.d("YHYH", "위로올리기 - ${it.first}")
+                    resetScrollTopState(it.first)
                 }
             ).launchIn(initLifecycleOwner().lifecycleScope)
         }
     }
-
-
     private fun addNavigationFragment() {
         navigationFragment = NavigationFragment()
-
         addFragment(R.id.containerNavigation, navigationFragment)
-
+    }
+    private fun setNavigationMenu(navigationType: NavigationType) {
+        selectMainViewFragment(navigationType)
     }
 
-    private fun selectSwipeFragment() {
-        selectMainViewFragment(NavigationType.SWIPE)
-    }
-
-    private fun selectLikeFragment() {
-        selectMainViewFragment(NavigationType.LIKE)
-    }
-
-    private fun selectMessageListFragment() {
-        selectMainViewFragment(NavigationType.MESSAGE)
-    }
-
-    private fun selectMyPageFragment() {
-        selectMainViewFragment(NavigationType.MYPAGE)
+    private fun setDefaultNavigation() {
+        setNavigationMenu(NavigationType.SWIPE)
     }
 
     private fun selectMainViewFragment(navigationType: NavigationType) {
+        // 기존 프래그먼트 숨기기
+        hideFragment(onTopFragment)
+
         when(navigationType) {
             NavigationType.SWIPE -> {
-                if(swipeFragment == null) swipeFragment = SwipeFragment()
-                onTopFragment = swipeFragment
+                if(swipeFragment == null) {
+                    swipeFragment = SwipeFragment()
+                    onTopFragment = swipeFragment
+                    addFragment(R.id.containerMain, onTopFragment)
+                } else {
+                    showFragment(swipeFragment)
+                    onTopFragment = swipeFragment
+                }
             }
             NavigationType.LIKE -> {
-                if(likeFragment == null) likeFragment = LikeFragment()
-                onTopFragment = likeFragment
+                if(likeFragment == null) {
+                    likeFragment = LikeFragment()
+                    onTopFragment = likeFragment
+                    addFragment(R.id.containerMain, onTopFragment)
+                } else {
+                    showFragment(likeFragment)
+                    onTopFragment = likeFragment
+                }
             }
             NavigationType.MESSAGE -> {
-                if(messageListFragment == null) messageListFragment = MessageListFragment()
-                onTopFragment = messageListFragment
+                if(messageListFragment == null) {
+                    messageListFragment = MessageListFragment()
+                    onTopFragment = messageListFragment
+                    addFragment(R.id.containerMain, onTopFragment)
+                } else {
+                    showFragment(messageListFragment)
+                    onTopFragment = messageListFragment
+                }
             }
             NavigationType.MYPAGE -> {
-                if(myPageFragment == null) myPageFragment = MyPageFragment()
-                onTopFragment = myPageFragment
+                if(myPageFragment == null) {
+                    myPageFragment = MyPageFragment()
+                    onTopFragment = myPageFragment
+                    addFragment(R.id.containerMain, onTopFragment)
+                } else {
+                    showFragment(myPageFragment)
+                    onTopFragment = myPageFragment
+                }
             }
         }
-        addFragment(R.id.containerMain, onTopFragment)
     }
 }
