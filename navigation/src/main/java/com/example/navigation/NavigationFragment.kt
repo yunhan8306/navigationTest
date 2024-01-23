@@ -6,13 +6,24 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.example.common.base.BaseFragment
 import com.example.common.extension.visible
+import com.example.common.model.NavigationSideEffect
 import com.example.common.model.NavigationType
 import com.example.navigation.databinding.FragmentNavigationBinding
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
-class NavigationFragment : BaseFragment<FragmentNavigationBinding>() {
+@AndroidEntryPoint
+class NavigationFragment @Inject constructor() : BaseFragment<FragmentNavigationBinding>() {
 
     private val viewModel by activityViewModels<NavigationViewModel>()
+
+    private val navigationBtnOnList by lazy {
+        listOf(binding.imgSwipeOn, binding.imgLikeHistoryOn, binding.imgMessageListOn, binding.imgMyPageOn)
+    }
+
+    private val navigationBtnOffList by lazy {
+        listOf(binding.imgSwipeOff, binding.imgLikeHistoryOff, binding.imgMessageListOff, binding.imgMyPageOff)
+    }
 
     override fun createFragmentBinding(
         inflater: LayoutInflater,
@@ -25,59 +36,48 @@ class NavigationFragment : BaseFragment<FragmentNavigationBinding>() {
     }
     private fun addListeners() = with(binding) {
         clMainList.setFirstClickEvent(200) {
-            viewModel.selectNavigation(NavigationType.SWIPE)
+            viewModel.selectNavigation(NavigationType.Swipe)
         }
 
         clLikeHistory.setFirstClickEvent(200) {
-            viewModel.selectNavigation(NavigationType.LIKE)
+            viewModel.selectNavigation(NavigationType.Like)
         }
 
         clMessageList.setFirstClickEvent(200) {
-            viewModel.selectNavigation(NavigationType.MESSAGE)
+            viewModel.selectNavigation(NavigationType.Message)
         }
 
         clMyPage.setFirstClickEvent(200) {
-            viewModel.selectNavigation(NavigationType.MYPAGE)
+            viewModel.selectNavigation(NavigationType.MyPage)
         }
-
     }
 
     private fun collectViewModel() = with(viewModel) {
-        selectNavigationMenuState.launchInUiState(
-            success = { type ->
-                with(binding) {
-                    // 뷰 반영
-                    navigationBtnOffList.forEach { it.visible(true) }
-                    navigationBtnOnList.forEach { it.visible(false) }
+        navigationState.onResult { setNavigationBtn(it) }
+    }
 
-                    when(type) {
-                        NavigationType.SWIPE -> {
-                            imgSwipeOff.visible(false)
-                            imgSwipeOn.visible(true)
-                        }
-                        NavigationType.LIKE -> {
-                            imgLikeHistoryOff.visible(false)
-                            imgLikeHistoryOn.visible(true)
-                        }
-                        NavigationType.MESSAGE -> {
-                            imgMessageListOff.visible(false)
-                            imgMessageListOn.visible(true)
-                        }
-                        NavigationType.MYPAGE -> {
-                            imgMyPageOff.visible(false)
-                            imgMyPageOn.visible(true)
-                        }
-                    }
-                }
+    private fun setNavigationBtn(navigationType: NavigationType) = with(binding) {
+        navigationBtnOffList.forEach { it.visible(true) }
+        navigationBtnOnList.forEach { it.visible(false) }
+
+        when(navigationType) {
+            is NavigationType.Swipe -> {
+                imgSwipeOff.visible(false)
+                imgSwipeOn.visible(true)
             }
-        )
-    }
-
-    private val navigationBtnOnList by lazy {
-        listOf(binding.imgSwipeOn, binding.imgLikeHistoryOn, binding.imgMessageListOn, binding.imgMyPageOn)
-    }
-
-    private val navigationBtnOffList by lazy {
-        listOf(binding.imgSwipeOff, binding.imgLikeHistoryOff, binding.imgMessageListOff, binding.imgMyPageOff)
+            is NavigationType.Like -> {
+                imgLikeHistoryOff.visible(false)
+                imgLikeHistoryOn.visible(true)
+            }
+            is NavigationType.Message -> {
+                imgMessageListOff.visible(false)
+                imgMessageListOn.visible(true)
+            }
+            is NavigationType.MyPage -> {
+                imgMyPageOff.visible(false)
+                imgMyPageOn.visible(true)
+            }
+            is NavigationType.None -> Unit
+        }
     }
 }

@@ -41,26 +41,10 @@ abstract class BaseFragment<Binding : ViewDataBinding> : Fragment(), LifecycleOw
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initFragment(savedInstanceState)
-        Log.d("YHYH", "${this.javaClass} - onViewCreated called")
     }
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-    }
-
-    fun isFragmentDestroying() = _binding == null
-
-    val Number.dp: Float get() = this.toDp(requireContext())
-    val Number.px: Int get() = this.toPx(requireContext())
-
-    fun Number.toPx(context: Context): Int {
-        val densityDpi = context.resources.displayMetrics.densityDpi
-        return (this.toFloat() * (densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
-    }
-
-    fun Number.toDp(context: Context): Float {
-        val densityDpi = context.resources.displayMetrics.densityDpi
-        return this.toFloat() / (densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 }

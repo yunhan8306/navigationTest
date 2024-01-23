@@ -1,5 +1,9 @@
 package com.example.common.model
 
-enum class NavigationType {
-    SWIPE, LIKE, MESSAGE, MYPAGE
+sealed interface NavigationType {
+    object Swipe : NavigationType
+    object Like : NavigationType
+    object Message : NavigationType
+    object MyPage : NavigationType
+    object None : NavigationType
 }

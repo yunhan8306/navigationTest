@@ -3,10 +3,7 @@ package com.example.navigationtest
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.example.common.base.BaseActivity
 import com.example.common.extension.LifecycleOwnerWrapper
@@ -20,15 +17,16 @@ import com.example.common.onUiState
 import com.example.navigation.NavigationViewModel
 import com.example.navigationtest.databinding.ActivityMainBinding
 import com.example.navigationtest.extension.hideFragment
-import com.example.navigationtest.extension.replaceFragment
 import com.example.navigationtest.extension.showFragment
 import com.example.swipe.SwipeFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 
 
-//@AndroidEntryPoint
+@AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(), LifecycleOwnerWrapper {
+
+    private val navigationViewModel by viewModels<NavigationViewModel>()
 
     private var swipeFragment: SwipeFragment? = null
     private var likeFragment: LikeFragment? = null
@@ -37,8 +35,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), LifecycleOwnerWrapper 
     private var navigationFragment: NavigationFragment? = null
 
     private var onTopFragment : Fragment? = null
+    private var startNavigationType: NavigationType = NavigationType.Swipe
 
-    private val navigationViewModel by viewModels<NavigationViewModel>()
 
 
     override fun createBinding() = ActivityMainBinding.inflate(layoutInflater)
@@ -46,82 +44,69 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), LifecycleOwnerWrapper 
     override fun initActivity(savedInstanceState: Bundle?) {
         collectViewModel()
         addNavigationFragment()
-        setDefaultNavigation()
+        navigationViewModel.selectNavigation(startNavigationType)
     }
 
-    private fun collectViewModel() {
-        with(navigationViewModel) {
-            selectNavigationMenuState.onUiState(
-                success = {
-                    selectMainViewFragment(it)
-                }
-            ).launchIn(initLifecycleOwner().lifecycleScope)
-
-            scrollTopState.onUiState(
-                success = {
-                    if(it.second) Log.d("YHYH", "위로올리기 - ${it.first}")
-                    resetScrollTopState(it.first)
-                }
-            ).launchIn(initLifecycleOwner().lifecycleScope)
+    private fun collectViewModel() = with(navigationViewModel) {
+        navigationState.onResult { navigationType ->
+            selectOnTopFragment(navigationType)
         }
     }
-    private fun addNavigationFragment() {
-        navigationFragment = NavigationFragment()
-        addFragment(R.id.containerNavigation, navigationFragment)
-    }
-    private fun setNavigationMenu(navigationType: NavigationType) {
-        selectMainViewFragment(navigationType)
-    }
-
-    private fun setDefaultNavigation() {
-        setNavigationMenu(NavigationType.SWIPE)
-    }
-
-    private fun selectMainViewFragment(navigationType: NavigationType) {
-        // 기존 프래그먼트 숨기기
+    private fun selectOnTopFragment(navigationType: NavigationType) {
         hideFragment(onTopFragment)
 
         when(navigationType) {
-            NavigationType.SWIPE -> {
+            is NavigationType.Swipe -> {
                 if(swipeFragment == null) {
                     swipeFragment = SwipeFragment()
-                    onTopFragment = swipeFragment
-                    addFragment(R.id.containerMain, onTopFragment)
+                    addFragment(R.id.containerMain, swipeFragment)
                 } else {
                     showFragment(swipeFragment)
-                    onTopFragment = swipeFragment
                 }
             }
-            NavigationType.LIKE -> {
+            is NavigationType.Like -> {
                 if(likeFragment == null) {
                     likeFragment = LikeFragment()
-                    onTopFragment = likeFragment
-                    addFragment(R.id.containerMain, onTopFragment)
+                    addFragment(R.id.containerMain, likeFragment)
                 } else {
                     showFragment(likeFragment)
-                    onTopFragment = likeFragment
                 }
             }
-            NavigationType.MESSAGE -> {
+            is NavigationType.Message -> {
                 if(messageListFragment == null) {
                     messageListFragment = MessageListFragment()
-                    onTopFragment = messageListFragment
-                    addFragment(R.id.containerMain, onTopFragment)
+                    addFragment(R.id.containerMain, messageListFragment)
                 } else {
                     showFragment(messageListFragment)
-                    onTopFragment = messageListFragment
                 }
             }
-            NavigationType.MYPAGE -> {
+            is NavigationType.MyPage -> {
                 if(myPageFragment == null) {
                     myPageFragment = MyPageFragment()
-                    onTopFragment = myPageFragment
-                    addFragment(R.id.containerMain, onTopFragment)
+                    addFragment(R.id.containerMain, myPageFragment)
                 } else {
                     showFragment(myPageFragment)
-                    onTopFragment = myPageFragment
                 }
             }
+            is NavigationType.None -> Unit
         }
+
+        onTopFragment = getNavigationFragment(navigationType)
+    }
+
+
+    private fun getNavigationFragment(navigationType: NavigationType) =
+        when(navigationType) {
+            is NavigationType.Swipe -> swipeFragment
+            is NavigationType.Like -> likeFragment
+            is NavigationType.Message -> messageListFragment
+            is NavigationType.MyPage -> myPageFragment
+            is NavigationType.None -> null
+        }
+
+
+    private fun addNavigationFragment() {
+        navigationFragment = NavigationFragment()
+        addFragment(R.id.containerNavigation, navigationFragment)
     }
 }
