@@ -1,13 +1,10 @@
 package com.example.navigation
 
 import android.app.Application
-import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.common.base.BaseViewModel
 import com.example.common.model.NavigationSideEffect
 import com.example.common.model.NavigationType
-import com.example.common.state.ResultState
-import com.example.common.state.mutableResultState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NavigationViewModel @Inject constructor(
     app: Application,
-): BaseViewModel(app) {
+): AndroidViewModel(app) {
 
     private val _navigationState = MutableStateFlow<NavigationType>(NavigationType.None)
     val navigationState = _navigationState.asStateFlow()

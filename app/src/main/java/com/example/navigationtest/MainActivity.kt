@@ -1,26 +1,22 @@
 package com.example.navigationtest
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.example.common.base.BaseActivity
 import com.example.common.extension.LifecycleOwnerWrapper
+import com.example.common.model.NavigationType
 import com.example.like.LikeFragment
 import com.example.message.MessageListFragment
 import com.example.mypage.MyPageFragment
 import com.example.navigation.NavigationFragment
-import com.example.navigationtest.extension.addFragment
-import com.example.common.model.NavigationType
-import com.example.common.onUiState
 import com.example.navigation.NavigationViewModel
 import com.example.navigationtest.databinding.ActivityMainBinding
+import com.example.navigationtest.extension.addFragment
 import com.example.navigationtest.extension.hideFragment
 import com.example.navigationtest.extension.showFragment
 import com.example.swipe.SwipeFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
 
 
 @AndroidEntryPoint

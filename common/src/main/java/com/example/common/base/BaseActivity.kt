@@ -22,8 +22,4 @@ abstract class BaseActivity<Binding : ViewDataBinding> : AppCompatActivity(), Li
         binding.lifecycleOwner = this
         initActivity(savedInstanceState)
     }
-
-
-
-
 }

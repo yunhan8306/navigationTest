@@ -10,6 +10,7 @@ import com.example.common.model.NavigationSideEffect
 import com.example.common.model.NavigationType
 import com.example.navigation.databinding.FragmentNavigationBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 @AndroidEntryPoint
